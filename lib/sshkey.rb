@@ -73,7 +73,7 @@ class SSHKey
   ED25519_SUPPORTED = begin
     key = OpenSSL::PKey.generate_key("ED25519")
     key.respond_to?(:raw_public_key) && key.respond_to?(:oid)
-  rescue
+  rescue StandardError
     false
   end
 
@@ -85,7 +85,7 @@ class SSHKey
     #
     # ==== Parameters
     # * options<~Hash>:
-    #   * :type<~String> - "rsa" or "dsa", "rsa" by default
+    #   * :type<~String> - "rsa", "dsa", "ecdsa", or "ed25519", "rsa" by default
     #   * :bits<~Integer> - Bit length
     #   * :comment<~String> - Comment to use for the public key, defaults to ""
     #   * :passphrase<~String> - Encrypt the key with this passphrase
@@ -392,7 +392,7 @@ class SSHKey
   # Create a new SSHKey object
   #
   # ==== Parameters
-  # * private_key - Existing RSA or DSA or ECDSA private key
+  # * private_key - Existing RSA, DSA, ECDSA, or ED25519 private key
   # * options<~Hash>
   #   * :comment<~String> - Comment to use for the public key, defaults to ""
   #   * :passphrase<~String> - If the key is encrypted, supply the passphrase
@@ -437,6 +437,7 @@ class SSHKey
     # ED25519 keys use PKCS8 PEM format ("BEGIN PRIVATE KEY") and are loaded via OpenSSL::PKey.read
     if ED25519_SUPPORTED
       begin
+        # Pass "" instead of nil: some OpenSSL versions raise TypeError on nil passphrase
         key = OpenSSL::PKey.read(private_key, passphrase || "")
         if key.oid == "ED25519"
           @key_object = key
@@ -647,10 +648,15 @@ class SSHKey
     field[fieldsize_x_halved][fieldsize_y_halved] = len - 1
     field[x][y] = len
 
-    type_name_length_max = 4  # Note: this will need to be extended to accomodate ed25519
-    bits_number_length_max = (bits < 1000 ? 3 : 4)
-    formatstr = "[%#{type_name_length_max}s %#{bits_number_length_max}u]"
-    output = "+--#{sprintf(formatstr, type.upcase, bits)}----+\n"
+    # Dynamically size the header label to fit within fieldsize_x
+    # For short type names (RSA, DSA, ECDSA), right-justify in a 4-char field for backward compat
+    # For longer names (ED25519), use the full name without padding
+    type_name = type.upcase
+    type_name_padded = type_name.length <= 4 ? sprintf("%4s", type_name) : type_name
+    header_content = "[#{type_name_padded} #{bits}]"
+    left_dashes = 2
+    right_dashes = [fieldsize_x - left_dashes - header_content.length, 2].max
+    output = "+#{'-' * left_dashes}#{header_content}#{'-' * right_dashes}+\n"
 
     fieldsize_y.times do |y|
       output << "|"

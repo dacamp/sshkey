@@ -1,10 +1,12 @@
 # SSHKey
 
-Generate private and public SSH keys (RSA, DSA, and ECDSA supported) using pure Ruby.
+Generate private and public SSH keys (RSA, DSA, ECDSA, and ED25519 supported) using pure Ruby.
 
 ## Requirements
 
 Tested / supported on CRuby 2.5+ and JRuby.
+
+**ED25519 support** requires Ruby/OpenSSL >= 3.1.0 (Ruby >= 3.3). On older Ruby versions, ED25519 operations raise errors; all other key types continue to work.
 
 ## Installation
 
@@ -14,7 +16,7 @@ Tested / supported on CRuby 2.5+ and JRuby.
 
 ### Generate a new key
 
-When generating a new keypair the default key type is 2048-bit RSA, but you can supply the `type` (RSA or DSA or ECDSA) and `bits` in the options.
+When generating a new keypair the default key type is 2048-bit RSA, but you can supply the `type` (RSA, DSA, ECDSA, or ED25519) and `bits` in the options.
 You can also (optionally) supply a `comment` or `passphrase`.
 
 ```ruby
@@ -26,11 +28,13 @@ k = SSHKey.generate(
   comment:    "foo@bar.com",
   passphrase: "foobar"
 )
+
+k = SSHKey.generate(type: "ed25519")
 ```
 
 ### Use your existing key
 
-Return an SSHKey object from an existing RSA or DSA or ECDSA private key (provided as a string in PEM format).
+Return an SSHKey object from an existing RSA, DSA, ECDSA, or ED25519 private key (provided as a string in PEM format). ED25519 keys use PKCS8 PEM format (`BEGIN PRIVATE KEY`).
 
 ```ruby
 f = File.read(File.expand_path("~/.ssh/id_rsa"))
@@ -55,7 +59,7 @@ ssh-keygen -p -N "" -m pem -f /path/to/existing/private/key
 
 #### Private and public keys
 
-Fetch the private and public keys as strings. Note that the `public_key` is the RSA or DSA or ECDSA public key, not an SSH public key.
+Fetch the private and public keys as strings. Note that the `public_key` is the RSA, DSA, ECDSA, or ED25519 public key, not an SSH public key.
 
 ```ruby
 k.private_key
@@ -173,7 +177,7 @@ puts k.randomart
 
 #### Original OpenSSL key object
 
-Return the original [OpenSSL::PKey::RSA](https://ruby-doc.org/3.2.2/exts/openssl/OpenSSL/PKey/RSA.html) or [OpenSSL::PKey::DSA](https://ruby-doc.org/3.2.2/exts/openssl/OpenSSL/PKey/DSA.html) or [OpenSSL::PKey::EC](https://ruby-doc.org/3.2.2/exts/openssl/OpenSSL/PKey/EC.html) object.
+Return the original [OpenSSL::PKey::RSA](https://ruby-doc.org/3.2.2/exts/openssl/OpenSSL/PKey/RSA.html), [OpenSSL::PKey::DSA](https://ruby-doc.org/3.2.2/exts/openssl/OpenSSL/PKey/DSA.html), [OpenSSL::PKey::EC](https://ruby-doc.org/3.2.2/exts/openssl/OpenSSL/PKey/EC.html), or `OpenSSL::PKey` (ED25519) object.
 
 ```ruby
 k.key_object
@@ -225,4 +229,4 @@ SSHKey.ssh_public_key_to_ssh2_public_key "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQ
 
 ## Copyright
 
-Copyright (c) 2011-2023 James Miller
+Copyright (c) 2011-2026 James Miller

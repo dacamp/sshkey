@@ -877,6 +877,32 @@ EOF
     assert_equal ED25519_GEN_SHA256_FINGERPRINT, SSHKey.sha256_fingerprint(SSH_PRIVATE_KEY_ED25519)
   end
 
+  def test_ed25519_encrypted_key_round_trip
+    return unless ed25519_supported?
+    generated = SSHKey.generate(:type => "ed25519", :passphrase => "secret")
+    assert_equal "secret", generated.passphrase
+
+    encrypted_pem = generated.encrypted_private_key
+    assert encrypted_pem.include?("ENCRYPTED")
+
+    reloaded = SSHKey.new(encrypted_pem, :passphrase => "secret")
+    assert_equal generated.md5_fingerprint, reloaded.md5_fingerprint
+  end
+
+  def test_ed25519_randomart
+    return unless ed25519_supported?
+    art = @key_ed25519.randomart
+    lines = art.lines.map { |l| l.chomp }
+
+    # All lines must be the same width
+    assert_equal 1, lines.map(&:length).uniq.length, "randomart lines have inconsistent width"
+
+    # Header must contain ED25519
+    assert lines.first.include?("ED25519"), "randomart header missing ED25519"
+    assert lines.first.start_with?("+"), "randomart header must start with +"
+    assert lines.first.end_with?("+"), "randomart header must end with +"
+  end
+
 end
 
 class SSHKeyEncryptedTest < Test::Unit::TestCase

@@ -90,6 +90,12 @@ AwEHoUQDQgAEQOAmNzXT3XN5DQdHBYCgflosVlHd6MUB1n9n6CCijvVJCQGJAA0p
 -----END EC PRIVATE KEY-----
 EOF
 
+  SSH_PRIVATE_KEY_ED25519 = <<-EOF
+-----BEGIN PRIVATE KEY-----
+MC4CAQAwBQYDK2VwBCIEIKD8H8EPhztmfTfc4w3/ZQQUSG8MCdEt/WO2cdqRMTx4
+-----END PRIVATE KEY-----
+EOF
+
   PUBLIC_KEY1 = <<-EOF
 -----BEGIN PUBLIC KEY-----
 MIIBIDANBgkqhkiG9w0BAQEFAAOCAQ0AMIIBCAKCAQEArfTA/lKVR84IMc9ZzXOC
@@ -136,6 +142,12 @@ MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEQOAmNzXT3XN5DQdHBYCgflosVlHd
 -----END PUBLIC KEY-----
 EOF
 
+  PUBLIC_KEY_ED25519 = <<-EOF
+-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEAHa1nYKNKIFMlWCMtyKBt6y8ZUON9f7LM6Y/+39j5Ekw=
+-----END PUBLIC KEY-----
+EOF
+
   SSH_PUBLIC_KEY1 = 'AAAAB3NzaC1yc2EAAAABIwAAAQEArfTA/lKVR84IMc9ZzXOCHr8DVtR8hzWuEVHF6KElavRHlk14g0SZu3m908Ejm/XF3EfNHjX9wN+62IMA0QBxkBMFCuLF+U/oeUs0NoDdAEKxjj4n6lq6Ss8aLct+anMy7D1jwvOLbcwV54w1d5JDdlZVdZ6AvHm9otwJq6rNpDgdmXY4HgC2nM9csFpuy0cDpL6fdJx9lcNL2RnkRC4+RMsIB+PxDw0j3vDi04dYLBXMGYjyeGH+mIFpL3PTPXGXwL2XDYXZ2H4SQX6bOoKmazTXq6QXuEB665njh1GxXldoIMcSshoJL0hrk3WrTOG22N2CQA+IfHgrXJ+A+QUzKQ=='
   SSH_PUBLIC_KEY2 = 'AAAAB3NzaC1yc2EAAAABIwAAAQEAxl6TpN7uFiY/JZ8qDnD7UrxDP+ABeh2PVg8Du1LEgXNk0+YWCeP5S6oHklqaWeDlbmAs1oHsBwCMAVpMa5tgONOLvz4JgwgkiqQEbKR8ofWJ+LADUElvqRVGmGiNEMLI6GJWeneL4sjmbb8d6U+M53c6iWG0si9XE5m7teBQSsCl0Tk3qMIkQGw5zpJeCXjZ8KpJhIJRYgexFkGgPlYRV+UYIhxpUW90t0Ra5i6JOFYwq98k5S/6SJIZQ/A9F4JNzwLw3eVxZj0yVHWxkGz1+TyELNY1kOyMxnZaqSfGzSQJTrnIXpdweVHuYh1LtOgedRQhCyiELeSMGwio1vRPKw=='
   SSH_PUBLIC_KEY3 = 'AAAAB3NzaC1kc3MAAACBALyVy5dwVwgL3CxXzsvo8DBh58qArQLBNIPW/f9pptmy7jD5QXzOw+12w0/z4lZ86ncoVutRMf44OABcX9ovhRl+luxB7jjpkVXy/p2ZaqPbeyTQUtdTmXa2y4n053Jd61VeMG+iLP7+viT+Ib96y9aVUYQfCrl5heBDUZ9cAFjdAAAAFQDFXnO7JJpFKwkeoor4GWGHtz0D2QAAAIEAqel0RUBO0MY5b3DZ69J/mRzUifN1O6twk4er2ph0JpryuUwZohLpcVZwqoGWmPQy/ZHmV1b3RtT9GWUa+HUqKdMhFVOx/iq1khVfLi83whjMMvXj3ecqd0yzGxGHnSsjVKefa2ywCLHrh4nlUVIaXI5gQpgMyVbMcromDe1WZzoAAACBAIwTRPAEcroqOzaebiVspFcmsXxDQ4wXQZQdho1ExW6FKS8s7/6pItmZYXTvJDwLXgq2/iK1fRRcKk2PJEaSuJR7WeNGsJKfWmQ2UbOhqA3wWLDazIZtcMKjFzD0hM4E8qgjHjMvKDE6WgT6SFP+tqx3nnh7pJWwsbGjSMQexpyR'
@@ -143,6 +155,7 @@ EOF
 
   SSH_PUBLIC_KEY_ED25519        = 'AAAAC3NzaC1lZDI1NTE5AAAAIBrNsRCISAtKXV5OVxqV6unVcdis5Uh3oiC6B7CMB7HQ'
   SSH_PUBLIC_KEY_ED25519_0_BYTE = 'AAAAC3NzaC1lZDI1NTE5AAAAIADK9x9t3yQQH7h4OEJpUa7l2j7mcmKf4LAsNXHxNbSm'
+  SSH_PUBLIC_KEY_ED25519_GEN    = 'AAAAC3NzaC1lZDI1NTE5AAAAIB2tZ2CjSiBTJVgjLcigbesvGVDjfX+yzOmP/t/Y+RJM'
 
   SSH_PUBLIC_KEY_ECDSA_256 = 'AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBHJFDZ5qymZfIzoJcxYeu3C9HjJ08QAbqR28C2zSMLwcb3ZzWdRApnj6wEgRvizsBmr9zyPKb2u5Rp0vjJtQcZo='
   SSH_PUBLIC_KEY_ECDSA_384 = 'AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzODQAAABhBP+GtUCOR8aW7xTtpkbJS0qqNZ98PgbUNtTFhE+Oe+khgoFMX+o0JG5bckVuvtkRl8dr+63kUK0QPTtzP9O5yixB9CYnB8CgCgYo1FCXZuJIImf12wW5nWKglrCH4kV1Qg=='
@@ -157,6 +170,7 @@ EOF
   KEY3_MD5_FINGERPRINT = "14:f6:6a:12:96:be:44:32:e6:3c:77:43:94:52:f5:7a"
   KEY4_MD5_FINGERPRINT = "38:0b:0f:63:36:64:b6:f0:43:94:de:32:75:eb:57:68"
   ED25519_MD5_FINGERPRINT = "6f:1a:8a:c1:4f:13:5c:36:6e:3f:be:eb:49:3b:8e:3e"
+  ED25519_GEN_MD5_FINGERPRINT = "f2:c3:af:7c:46:8b:21:a7:85:b3:ff:d1:06:5e:c4:fd"
   ECDSA_256_MD5_FINGERPRINT = "d9:3a:7f:de:b2:65:04:ac:62:05:1a:1e:97:e9:2b:9d"
   ECDSA_384_MD5_FINGERPRINT = "b5:bb:3e:f6:eb:3b:0f:1e:18:37:1f:36:ac:7c:87:0d"
   ECDSA_521_MD5_FINGERPRINT = "98:8e:a9:4c:b9:aa:58:35:d1:42:65:c3:41:dd:04:e1"
@@ -166,6 +180,7 @@ EOF
   KEY3_SHA1_FINGERPRINT = "15:68:c6:72:ac:18:d1:fc:ab:a2:b7:b5:8c:d1:fe:8f:b9:ae:a9:47"
   KEY4_SHA1_FINGERPRINT = "aa:b5:e6:62:27:87:b8:05:f6:d6:8f:31:dc:83:81:d9:8f:f8:71:29"
   ED25519_SHA1_FINGERPRINT = "57:41:7c:d0:e2:53:28:87:7e:87:53:d4:69:ef:ef:63:ec:c0:0e:5e"
+  ED25519_GEN_SHA1_FINGERPRINT = "f3:79:df:6c:7d:58:d2:7d:4c:e9:73:e7:f5:4c:90:f2:71:81:14:88"
   ECDSA_256_SHA1_FINGERPRINT = "94:e8:92:2b:1b:ec:49:de:ff:85:ea:6e:10:d6:8d:87:7a:67:40:ee"
   ECDSA_384_SHA1_FINGERPRINT = "cc:fb:4c:d6:e9:d0:03:ae:2d:82:e1:fc:70:d8:47:98:25:e1:83:2b"
   ECDSA_521_SHA1_FINGERPRINT = "6b:2c:a2:6e:3a:82:6c:73:28:57:91:20:71:82:bc:8f:f8:9d:6c:41"
@@ -175,6 +190,7 @@ EOF
   KEY3_SHA256_FINGERPRINT = "mPqEPQlOPGORrTJrU17sPax1jOqeutZja6MOsFIca+8"
   KEY4_SHA256_FINGERPRINT = "foUpf1ox3KfG3eKgJxGoSdZFRxHPsBYJgfD+CMYky6Y"
   ED25519_SHA256_FINGERPRINT = "gyzHUKl1eO8Bk1Cvn4joRgxRlXo1+1HJ3Vho/hAtKEg"
+  ED25519_GEN_SHA256_FINGERPRINT = "i95QUUgwE/8EHJ7llRHDYpiB0s4h8pM8WgnC5XoQdRA"
   ECDSA_256_SHA256_FINGERPRINT = "ncy2crhoL44R58GCZPQ5chPRrjlQKKgu07FDNelDmdk"
   ECDSA_384_SHA256_FINGERPRINT = "mrr4QcP6qD05DUS6Rwefb9f0uuvjyMcO28LSiq2283U"
   ECDSA_521_SHA256_FINGERPRINT = "QnaiGMIVDZyTG47hMWK6Y1z/yUzHIcTBGpNNuUwlhAk"
@@ -341,6 +357,7 @@ EOF
     @key2 = SSHKey.new(SSH_PRIVATE_KEY2, :comment => "me@example.com")
     @key3 = SSHKey.new(SSH_PRIVATE_KEY3, :comment => "me@example.com")
     @key4 = SSHKey.new(SSH_PRIVATE_KEY4, :comment => "me@example.com")
+    @key_ed25519 = SSHKey.new(SSH_PRIVATE_KEY_ED25519, :comment => "me@example.com")
     @key_without_comment = SSHKey.new(SSH_PRIVATE_KEY1)
   end
 
@@ -355,6 +372,7 @@ EOF
   def test_generator_with_type
     assert_equal "rsa", SSHKey.generate(:type => "rsa").type
     assert_equal "dsa", SSHKey.generate(:type => "dsa").type
+    assert_equal "ed25519", SSHKey.generate(:type => "ed25519").type
 
     if ecdsa_supported?
       assert_equal "ecdsa", SSHKey.generate(:type => "ecdsa").type
@@ -761,6 +779,84 @@ EOF
     assert_equal KEY1_SSHFP, @key1.sshfp("localhost")
     assert_equal KEY2_SSHFP, @key2.sshfp("localhost")
     assert_equal KEY3_SSHFP, @key3.sshfp("localhost")
+  end
+
+  # ED25519 tests
+
+  def test_ed25519_type
+    assert_equal "ed25519", @key_ed25519.type
+    assert_equal "ssh-ed25519", @key_ed25519.typestr
+  end
+
+  def test_ed25519_private_key
+    assert_equal SSH_PRIVATE_KEY_ED25519, @key_ed25519.private_key
+  end
+
+  def test_ed25519_public_key
+    assert_equal PUBLIC_KEY_ED25519, @key_ed25519.public_key
+  end
+
+  def test_ed25519_ssh_public_key_decoded
+    assert_equal Base64.decode64(SSH_PUBLIC_KEY_ED25519_GEN), @key_ed25519.send(:ssh_public_key_conversion)
+  end
+
+  def test_ed25519_ssh_public_key_encoded
+    assert_equal SSH_PUBLIC_KEY_ED25519_GEN, Base64.encode64(@key_ed25519.send(:ssh_public_key_conversion)).gsub("\n", "")
+  end
+
+  def test_ed25519_ssh_public_key_output
+    expected = "ssh-ed25519 #{SSH_PUBLIC_KEY_ED25519_GEN} me@example.com"
+    assert_equal expected, @key_ed25519.ssh_public_key
+  end
+
+  def test_ed25519_fingerprints
+    assert_equal ED25519_GEN_MD5_FINGERPRINT, @key_ed25519.md5_fingerprint
+    assert_equal ED25519_GEN_SHA1_FINGERPRINT, @key_ed25519.sha1_fingerprint
+    assert_equal ED25519_GEN_SHA256_FINGERPRINT, @key_ed25519.sha256_fingerprint
+  end
+
+  def test_ed25519_bits
+    assert_equal 256, @key_ed25519.bits
+  end
+
+  def test_ed25519_sshfp
+    sshfp = @key_ed25519.sshfp("localhost")
+    assert sshfp.include?("SSHFP 4 1")
+    assert sshfp.include?("SSHFP 4 2")
+  end
+
+  def test_ed25519_valid_ssh_public_key
+    assert SSHKey.valid_ssh_public_key?(@key_ed25519.ssh_public_key)
+  end
+
+  def test_generator_with_ed25519_type
+    generated = SSHKey.generate(:type => "ed25519", :comment => "ed25519 key")
+    assert_equal "ed25519", generated.type
+    assert_equal "ssh-ed25519", generated.typestr
+    assert_equal "ed25519 key", generated.comment
+    assert generated.ssh_public_key.start_with?("ssh-ed25519 ")
+    assert SSHKey.valid_ssh_public_key?(generated.ssh_public_key)
+    assert_equal 256, generated.bits
+  end
+
+  def test_ed25519_generate_and_reload
+    generated = SSHKey.generate(:type => "ed25519")
+    reloaded = SSHKey.new(generated.private_key)
+    assert_equal generated.md5_fingerprint, reloaded.md5_fingerprint
+    assert_equal generated.ssh_public_key.split(" ")[1], reloaded.ssh_public_key.split(" ")[1]
+  end
+
+  def test_ed25519_ssh_public_key_output_from_generated
+    generated = SSHKey.generate(:type => "ed25519", :comment => "ed25519 key")
+    encoded = Base64.encode64(generated.send(:ssh_public_key_conversion)).gsub("\n", "")
+    expected = "ssh-ed25519 #{encoded} ed25519 key"
+    assert_equal expected, generated.ssh_public_key
+  end
+
+  def test_ed25519_class_fingerprints_from_private_key
+    assert_equal ED25519_GEN_MD5_FINGERPRINT, SSHKey.md5_fingerprint(SSH_PRIVATE_KEY_ED25519)
+    assert_equal ED25519_GEN_SHA1_FINGERPRINT, SSHKey.sha1_fingerprint(SSH_PRIVATE_KEY_ED25519)
+    assert_equal ED25519_GEN_SHA256_FINGERPRINT, SSHKey.sha256_fingerprint(SSH_PRIVATE_KEY_ED25519)
   end
 
 end

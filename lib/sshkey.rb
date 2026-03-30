@@ -117,11 +117,24 @@ class SSHKey
           key_object = key_pkey.generate_key
         end
 
+      when "ed25519"
+        key_object = OpenSSL::PKey.generate_key("ED25519")
+
       else
         raise "Unknown key type: #{type}"
       end
 
-      key_pem = key_object.to_pem(cipher, options[:passphrase])
+      case type.downcase
+      when "ed25519"
+        key_pem = if options[:passphrase]
+          key_object.private_to_pem(cipher, options[:passphrase])
+        else
+          key_object.private_to_pem
+        end
+      else
+        key_pem = key_object.to_pem(cipher, options[:passphrase])
+      end
+
       new(key_pem, options)
     end
 
@@ -400,10 +413,30 @@ class SSHKey
 
     return if @type
 
-    @key_object = OpenSSL::PKey::EC.new(private_key, passphrase)
-    @type = "ecdsa"
-    bits = ECDSA_CURVES.invert[@key_object.group.curve_name]
-    @typestr = "ecdsa-sha2-nistp#{bits}"
+    begin
+      @key_object = OpenSSL::PKey::EC.new(private_key, passphrase)
+      @type = "ecdsa"
+      bits = ECDSA_CURVES.invert[@key_object.group.curve_name]
+      @typestr = "ecdsa-sha2-nistp#{bits}"
+    rescue OpenSSL::PKey::PKeyError
+      @type = nil
+    end
+
+    return if @type
+
+    # ED25519 keys use PKCS8 PEM format ("BEGIN PRIVATE KEY") and are loaded via OpenSSL::PKey.read
+    begin
+      key = OpenSSL::PKey.read(private_key, passphrase || "")
+      if key.oid == "ED25519"
+        @key_object = key
+        @type = "ed25519"
+        @typestr = "ssh-ed25519"
+      end
+    rescue OpenSSL::PKey::PKeyError
+      @type = nil
+    end
+
+    raise "Unknown key type or invalid key" unless @type
   end
 
   # Fetch the private key (PEM format)
@@ -414,7 +447,11 @@ class SSHKey
     # https://github.com/jruby/jruby-openssl/issues/189
     jruby_not_implemented("OpenSSL::PKey::EC is not fully implemented") if type == "ecdsa"
 
-    key_object.to_pem
+    if type == "ed25519"
+      key_object.private_to_pem
+    else
+      key_object.to_pem
+    end
   end
   alias_method :rsa_private_key, :private_key
   alias_method :dsa_private_key, :private_key
@@ -424,14 +461,22 @@ class SSHKey
   # If no passphrase is set, returns the unencrypted private key
   def encrypted_private_key
     return private_key unless passphrase
-    key_object.to_pem(OpenSSL::Cipher.new("AES-128-CBC"), passphrase)
+    if type == "ed25519"
+      key_object.private_to_pem(OpenSSL::Cipher.new("AES-128-CBC"), passphrase)
+    else
+      key_object.to_pem(OpenSSL::Cipher.new("AES-128-CBC"), passphrase)
+    end
   end
 
   # Fetch the public key (PEM format)
   #
   # rsa_public_key and dsa_public_key are aliased for backward compatibility
   def public_key
-    public_key_object.to_pem
+    if type == "ed25519"
+      key_object.public_to_pem
+    else
+      public_key_object.to_pem
+    end
   end
   alias_method :rsa_public_key, :public_key
   alias_method :dsa_public_key, :public_key
@@ -648,21 +693,28 @@ class SSHKey
   # For instance, the "ssh-rsa" string is encoded as the following byte array
   # [0, 0, 0, 7, 's', 's', 'h', '-', 'r', 's', 'a']
   def ssh_public_key_conversion
-    methods = SSH_CONVERSION[type]
-    methods.inject([typestr.length].pack("N") + typestr) do |pubkeystr, m|
-      # Given public_key_object.class == OpenSSL::BN, public_key_object.to_s(0)
-      # returns an MPI formatted string (length prefixed bytes). This is not
-      # supported by JRuby, so we still have to deal with length and data separately.
-      val = public_key_object.send(m)
+    if type == "ed25519"
+      # ED25519 SSH public key format: type string + 32-byte raw public key
+      # https://tools.ietf.org/id/draft-bjh21-ssh-ed25519-00.html#rfc.section.4
+      raw_pub = key_object.raw_public_key
+      [typestr.length].pack("N") + typestr + [raw_pub.length].pack("N") + raw_pub
+    else
+      methods = SSH_CONVERSION[type]
+      methods.inject([typestr.length].pack("N") + typestr) do |pubkeystr, m|
+        # Given public_key_object.class == OpenSSL::BN, public_key_object.to_s(0)
+        # returns an MPI formatted string (length prefixed bytes). This is not
+        # supported by JRuby, so we still have to deal with length and data separately.
+        val = public_key_object.send(m)
 
-      case type
-      when "dsa","rsa" then data = self.class.ssh_public_key_data_dsarsa(val)
-      when "ecdsa"     then data = self.class.ssh_public_key_data_ecdsa(val)
-      else
-        raise "Unknown key type: #{type}"
+        case type
+        when "dsa","rsa" then data = self.class.ssh_public_key_data_dsarsa(val)
+        when "ecdsa"     then data = self.class.ssh_public_key_data_ecdsa(val)
+        else
+          raise "Unknown key type: #{type}"
+        end
+
+        pubkeystr + [data.length].pack("N") + data
       end
-
-      pubkeystr + [data.length].pack("N") + data
     end
   end
 

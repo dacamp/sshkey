@@ -9,6 +9,10 @@ class SSHKeyTest < Test::Unit::TestCase
     RUBY_PLATFORM != "java"
   end
 
+  def ed25519_supported?
+    SSHKey::ED25519_SUPPORTED
+  end
+
   SSH_PRIVATE_KEY1 = <<-EOF
 -----BEGIN RSA PRIVATE KEY-----
 MIIEogIBAAKCAQEArfTA/lKVR84IMc9ZzXOCHr8DVtR8hzWuEVHF6KElavRHlk14
@@ -357,7 +361,7 @@ EOF
     @key2 = SSHKey.new(SSH_PRIVATE_KEY2, :comment => "me@example.com")
     @key3 = SSHKey.new(SSH_PRIVATE_KEY3, :comment => "me@example.com")
     @key4 = SSHKey.new(SSH_PRIVATE_KEY4, :comment => "me@example.com")
-    @key_ed25519 = SSHKey.new(SSH_PRIVATE_KEY_ED25519, :comment => "me@example.com")
+    @key_ed25519 = SSHKey.new(SSH_PRIVATE_KEY_ED25519, :comment => "me@example.com") if ed25519_supported?
     @key_without_comment = SSHKey.new(SSH_PRIVATE_KEY1)
   end
 
@@ -372,7 +376,7 @@ EOF
   def test_generator_with_type
     assert_equal "rsa", SSHKey.generate(:type => "rsa").type
     assert_equal "dsa", SSHKey.generate(:type => "dsa").type
-    assert_equal "ed25519", SSHKey.generate(:type => "ed25519").type
+    assert_equal "ed25519", SSHKey.generate(:type => "ed25519").type if ed25519_supported?
 
     if ecdsa_supported?
       assert_equal "ecdsa", SSHKey.generate(:type => "ecdsa").type
@@ -784,52 +788,63 @@ EOF
   # ED25519 tests
 
   def test_ed25519_type
+    return unless ed25519_supported?
     assert_equal "ed25519", @key_ed25519.type
     assert_equal "ssh-ed25519", @key_ed25519.typestr
   end
 
   def test_ed25519_private_key
+    return unless ed25519_supported?
     assert_equal SSH_PRIVATE_KEY_ED25519, @key_ed25519.private_key
   end
 
   def test_ed25519_public_key
+    return unless ed25519_supported?
     assert_equal PUBLIC_KEY_ED25519, @key_ed25519.public_key
   end
 
   def test_ed25519_ssh_public_key_decoded
+    return unless ed25519_supported?
     assert_equal Base64.decode64(SSH_PUBLIC_KEY_ED25519_GEN), @key_ed25519.send(:ssh_public_key_conversion)
   end
 
   def test_ed25519_ssh_public_key_encoded
+    return unless ed25519_supported?
     assert_equal SSH_PUBLIC_KEY_ED25519_GEN, Base64.encode64(@key_ed25519.send(:ssh_public_key_conversion)).gsub("\n", "")
   end
 
   def test_ed25519_ssh_public_key_output
+    return unless ed25519_supported?
     expected = "ssh-ed25519 #{SSH_PUBLIC_KEY_ED25519_GEN} me@example.com"
     assert_equal expected, @key_ed25519.ssh_public_key
   end
 
   def test_ed25519_fingerprints
+    return unless ed25519_supported?
     assert_equal ED25519_GEN_MD5_FINGERPRINT, @key_ed25519.md5_fingerprint
     assert_equal ED25519_GEN_SHA1_FINGERPRINT, @key_ed25519.sha1_fingerprint
     assert_equal ED25519_GEN_SHA256_FINGERPRINT, @key_ed25519.sha256_fingerprint
   end
 
   def test_ed25519_bits
+    return unless ed25519_supported?
     assert_equal 256, @key_ed25519.bits
   end
 
   def test_ed25519_sshfp
+    return unless ed25519_supported?
     sshfp = @key_ed25519.sshfp("localhost")
     assert sshfp.include?("SSHFP 4 1")
     assert sshfp.include?("SSHFP 4 2")
   end
 
   def test_ed25519_valid_ssh_public_key
+    return unless ed25519_supported?
     assert SSHKey.valid_ssh_public_key?(@key_ed25519.ssh_public_key)
   end
 
   def test_generator_with_ed25519_type
+    return unless ed25519_supported?
     generated = SSHKey.generate(:type => "ed25519", :comment => "ed25519 key")
     assert_equal "ed25519", generated.type
     assert_equal "ssh-ed25519", generated.typestr
@@ -840,6 +855,7 @@ EOF
   end
 
   def test_ed25519_generate_and_reload
+    return unless ed25519_supported?
     generated = SSHKey.generate(:type => "ed25519")
     reloaded = SSHKey.new(generated.private_key)
     assert_equal generated.md5_fingerprint, reloaded.md5_fingerprint
@@ -847,6 +863,7 @@ EOF
   end
 
   def test_ed25519_ssh_public_key_output_from_generated
+    return unless ed25519_supported?
     generated = SSHKey.generate(:type => "ed25519", :comment => "ed25519 key")
     encoded = Base64.encode64(generated.send(:ssh_public_key_conversion)).gsub("\n", "")
     expected = "ssh-ed25519 #{encoded} ed25519 key"
@@ -854,6 +871,7 @@ EOF
   end
 
   def test_ed25519_class_fingerprints_from_private_key
+    return unless ed25519_supported?
     assert_equal ED25519_GEN_MD5_FINGERPRINT, SSHKey.md5_fingerprint(SSH_PRIVATE_KEY_ED25519)
     assert_equal ED25519_GEN_SHA1_FINGERPRINT, SSHKey.sha1_fingerprint(SSH_PRIVATE_KEY_ED25519)
     assert_equal ED25519_GEN_SHA256_FINGERPRINT, SSHKey.sha256_fingerprint(SSH_PRIVATE_KEY_ED25519)

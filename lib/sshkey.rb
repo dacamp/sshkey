@@ -68,6 +68,15 @@ class SSHKey
 
   SSH2_LINE_LENGTH = 70 # +1 (for line wrap '/' character) must be <= 72
 
+  # ED25519 requires OpenSSL::PKey.generate_key, PKey#oid, PKey#raw_public_key, and PKey#private_to_pem
+  # These are available in Ruby/OpenSSL >= 3.1.0 (ships with Ruby >= 3.3)
+  ED25519_SUPPORTED = begin
+    key = OpenSSL::PKey.generate_key("ED25519")
+    key.respond_to?(:raw_public_key) && key.respond_to?(:oid)
+  rescue
+    false
+  end
+
   class << self
     # Generate a new keypair and return an SSHKey object
     #
@@ -118,6 +127,7 @@ class SSHKey
         end
 
       when "ed25519"
+        raise "ED25519 is not supported by your Ruby/OpenSSL version" unless ED25519_SUPPORTED
         key_object = OpenSSL::PKey.generate_key("ED25519")
 
       else
@@ -425,15 +435,17 @@ class SSHKey
     return if @type
 
     # ED25519 keys use PKCS8 PEM format ("BEGIN PRIVATE KEY") and are loaded via OpenSSL::PKey.read
-    begin
-      key = OpenSSL::PKey.read(private_key, passphrase || "")
-      if key.oid == "ED25519"
-        @key_object = key
-        @type = "ed25519"
-        @typestr = "ssh-ed25519"
+    if ED25519_SUPPORTED
+      begin
+        key = OpenSSL::PKey.read(private_key, passphrase || "")
+        if key.oid == "ED25519"
+          @key_object = key
+          @type = "ed25519"
+          @typestr = "ssh-ed25519"
+        end
+      rescue OpenSSL::PKey::PKeyError
+        @type = nil
       end
-    rescue OpenSSL::PKey::PKeyError
-      @type = nil
     end
 
     raise "Unknown key type or invalid key" unless @type
